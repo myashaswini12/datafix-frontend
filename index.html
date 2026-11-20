@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>DataFix | Data Quality Platform</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #f4f7fb;
+      color: #172033;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+
+    .sidebar {
+      width: 250px;
+      background: #0b1220;
+      color: white;
+      padding: 25px 18px;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 10px 28px;
+      border-bottom: 1px solid #263148;
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .logo h1 {
+      font-size: 21px;
+    }
+
+    .logo p {
+      color: #8995aa;
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    .menu-title {
+      color: #64748b;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin: 28px 10px 10px;
+    }
+
+    .nav-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      border: none;
+      background: transparent;
+      color: #9ba7bb;
+      padding: 13px 14px;
+      margin-bottom: 5px;
+      border-radius: 9px;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    .nav-icon {
+      width: 20px;
+      text-align: center;
+    }
+
+    .issue-count {
+      margin-left: auto;
+      background: #ef4444;
+      color: white;
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 20px;
+    }
+
+    .system-status {
+      position: absolute;
+      bottom: 22px;
+      left: 18px;
+      right: 18px;
+      background: #121c2e;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: #22c55e;
+      border-radius: 50%;
+      margin-right: 7px;
+    }
+
+    .system-status small {
+      color: #a4afc1;
+    }
+
+    .system-status p {
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    /* MAIN */
+
+    .main {
+      margin-left: 250px;
+      width: calc(100% - 250px);
+    }
+
+    .navbar {
+      height: 75px;
+      background: white;
+      border-bottom: 1px solid #e4e9f1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .breadcrumb {
+      color: #8994a7;
+      font-size: 12px;
+    }
+
+    .page-title {
+      font-size: 20px;
+      margin-top: 5px;
+    }
+
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      background: #dbeafe;
+      color: #2563eb;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .user-name {
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .user-role {
+      color: #8a95a8;
+      font-size: 11px;
+    }
+
+    /* CONTENT */
+
+    .content {
+      padding: 30px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .welcome {
+      margin-bottom: 25px;
+    }
+
+    .welcome h2 {
+      font-size: 27px;
+      margin-bottom: 7px;
+    }
+
+    .welcome p {
+      color: #718096;
+      font-size: 14px;
+    }
+
+    /* CARDS */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #e7ebf2;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+    }
+
+    .stat-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .stat-label {
+      color: #758198;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .stat-number {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .stat-change {
+      color: #16a34a;
+      font-size: 11px;
+      margin-top: 7px;
+    }
+
+    .stat-icon {
+      width: 43px;
+      height: 43px;
+      border-radius: 11px;
+      background: #eff6ff;
+      color: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    /* DASHBOARD */
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-header h3 {
+      font-size: 15px;
+    }
+
+    .card-header span {
+      color: #718096;
+      font-size: 11px;
+    }
+
+    .chart {
+      height: 220px;
+      display: flex;
+      align-items: end;
+      gap: 12px;
+      padding: 10px 10px 0;
+      border-bottom: 1px solid #e5e9f0;
+    }
+
+    .bar {
+      flex: 1;
+      background: #3b82f6;
+      border-radius: 6px 6px 0 0;
+      min-height: 20px;
+      position: relative;
+    }
+
+    .bar span {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      color: #64748b;
+    }
+
+    .chart-labels {
+      display: flex;
+      gap: 12px;
+      padding: 8px 10px;
+    }
+
+    .chart-labels span {
+      flex: 1;
+      text-align: center;
+      font-size: 10px;
+      color: #94a3b8;
+    }
+
+    .quality-score {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .score-circle {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 14px solid #22c55e;
+      border-right-color: #e5e7eb;
+      margin: 10px auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    .quality-score p {
+      color: #718096;
+      font-size: 12px;
+    }
+
+    /* TABLE */
+
+    .table-card {
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      background: #f8fafc;
+      color: #64748b;
+      font-size: 11px;
+      padding: 13px;
+    }
+
+    td {
+      padding: 15px 13px;
+      border-bottom: 1px solid #edf0f4;
+      font-size: 12px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: bold;
+    }
+
+    .success {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .warning {
+      background: #fef3c7;
+      color: #a16207;
+    }
+
+    .danger {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .info {
+      background: #dbeafe;
+      color: #2563eb;
+    }
+
+    /* UPLOAD */
+
+    .upload-box {
+      border: 2px dashed #cbd5e1;
+      border-radius: 16px;
+      background: white;
+      padding: 55px 20px;
+      text-align: center;
+      max-width: 800px;
+      margin: 20px auto;
+    }
+
+    .upload-icon {
+      width: 60px;
+      height: 60px;
+      margin: auto;
+      border-radius: 50%;
+      background: #eff6ff;
+      color: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+    }
+
+    .upload-box h3 {
+      margin-top: 15px;
+    }
+
+    .upload-box p {
+      color: #718096;
+      font-size: 12px;
+      margin: 8px 0 20px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 11px 18px;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-secondary {
+      background: #eef2f7;
+      color: #334155;
+    }
+
+    /* PROFILE */
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .metric {
+      font-size: 25px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .progress {
+      height: 7px;
+      background: #e8edf3;
+      border-radius: 20px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: #2563eb;
+      border-radius: 20px;
+    }
+
+    /* ISSUES */
+
+    .issue-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .issue-card {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      border: 1px solid #e7ebf2;
+    }
+
+    .issue-card small {
+      color: #758198;
+    }
+
+    .issue-card strong {
+      display: block;
+      font-size: 25px;
+      margin-top: 7px;
+    }
+
+    /* REPAIR */
+
+    .repair-step {
+      display: flex;
+      gap: 15px;
+      padding: 20px;
+      background: white;
+      border: 1px solid #e6ebf2;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .step-number {
+      min-width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: #dbeafe;
+      color: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .repair-step h4 {
+      margin-bottom: 5px;
+    }
+
+    .repair-step p {
+      color: #718096;
+      font-size: 12px;
+    }
+
+    /* VALIDATION */
+
+    .validation-result {
+      background: white;
+      border-radius: 14px;
+      padding: 35px;
+      text-align: center;
+      border: 1px solid #e7ebf2;
+    }
+
+    .check {
+      width: 70px;
+      height: 70px;
+      background: #dcfce7;
+      color: #16a34a;
+      border-radius: 50%;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+    }
+
+    .validation-result h2 {
+      margin-top: 15px;
+    }
+
+    .validation-result p {
+      color: #718096;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    /* REPORTS */
+
+    .reports-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .report {
+      background: white;
+      padding: 20px;
+      border: 1px solid #e7ebf2;
+      border-radius: 13px;
+    }
+
+    .report-icon {
+      font-size: 25px;
+      margin-bottom: 15px;
+    }
+
+    .report h3 {
+      font-size: 15px;
+    }
+
+    .report p {
+      color: #718096;
+      font-size: 11px;
+      line-height: 1.6;
+      margin: 8px 0 18px;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 1000px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-grid,
+      .issue-summary,
+      .reports-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .sidebar {
+        display: none;
+      }
+
+      .main {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .stats,
+      .profile-grid,
+      .issue-summary,
+      .reports-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .navbar {
+        padding: 0 20px;
+      }
+
+      .user-name,
+      .user-role {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+
+  <aside class="sidebar">
+
+    <div class="logo">
+      <div class="logo-icon">DF</div>
+
+      <div>
+        <h1>DataFix</h1>
+        <p>Data Quality Platform</p>
+      </div>
+    </div>
+
+    <div class="menu-title">
+      Workspace
+    </div>
+
+    <button class="nav-item active" onclick="showPage('dashboard', this)">
+      <span class="nav-icon">▣</span>
+      Dashboard
+    </button>
+
+    <button class="nav-item" onclick="showPage('upload', this)">
+      <span class="nav-icon">↑</span>
+      Upload
+    </button>
+
+    <button class="nav-item" onclick="showPage('profiling', this)">
+      <span class="nav-icon">▥</span>
+      Profiling
+    </button>
+
+    <button class="nav-item" onclick="showPage('issues', this)">
+      <span class="nav-icon">⚠</span>
+      Issues
+      <span class="issue-count">5</span>
+    </button>
+
+    <button class="nav-item" onclick="showPage('repair', this)">
+      <span class="nav-icon">🔧</span>
+      Repair
+    </button>
+
+    <button class="nav-item" onclick="showPage('validation', this)">
+      <span class="nav-icon">✓</span>
+      Validation
+    </button>
+
+    <button class="nav-item" onclick="showPage('reports', this)">
+      <span class="nav-icon">▤</span>
+      Reports
+    </button>
+
+    <div class="system-status">
+      <span class="status-dot"></span>
+      <small>System Status</small>
+
+      <p>All systems operational</p>
+    </div>
+
+  </aside>
+
+  <!-- MAIN -->
+
+  <main class="main">
+
+    <!-- NAVBAR -->
+
+    <header class="navbar">
+
+      <div>
+        <div class="breadcrumb">
+          DataFix / <span id="breadcrumb">Dashboard</span>
+        </div>
+
+        <h2 class="page-title" id="pageTitle">
+          Dashboard
+        </h2>
+      </div>
+
+      <div class="user">
+
+        <div class="avatar">
+          Y
+        </div>
+
+        <div>
+          <div class="user-name">
+            Data Analyst
+          </div>
+
+          <div class="user-role">
+            Admin
+          </div>
+        </div>
+
+      </div>
+
+    </header>
+
+    <!-- CONTENT -->
+
+    <section class="content">
+
+      <!-- DASHBOARD -->
+
+      <div id="dashboard" class="page active">
+
+        <div class="welcome">
+          <h2>Welcome to DataFix 👋</h2>
+
+          <p>
+            Monitor, analyze and improve the quality of your datasets.
+          </p>
+        </div>
+
+        <div class="stats">
+
+          <div class="card stat-card">
+            <div>
+              <div class="stat-label">Datasets</div>
+              <div class="stat-number">24</div>
+              <div class="stat-change">↑ 12% this month</div>
+            </div>
+
+            <div class="stat-icon">▣</div>
+          </div>
+
+          <div class="card stat-card">
+            <div>
+              <div class="stat-label">Data Quality Score</div>
+              <div class="stat-number">94%</div>
+              <div class="stat-change">↑ 5.2% improvement</div>
+            </div>
+
+            <div class="stat-icon">✓</div>
+          </div>
+
+          <div class="card stat-card">
+            <div>
+              <div class="stat-label">Issues Detected</div>
+              <div class="stat-number">127</div>
+              <div class="stat-change">↓ 18% from last scan</div>
+            </div>
+
+            <div class="stat-icon">⚠</div>
+          </div>
+
+          <div class="card stat-card">
+            <div>
+              <div class="stat-label">Issues Repaired</div>
+              <div class="stat-number">103</div>
+              <div class="stat-change">81% resolution rate</div>
+            </div>
+
+            <div class="stat-icon">🔧</div>
+          </div>
+
+        </div>
+
+        <div class="dashboard-grid">
+
+          <div class="card">
+
+            <div class="card-header">
+              <h3>Data Quality Overview</h3>
+              <span>Last 7 days</span>
+            </div>
+
+            <div class="chart">
+
+              <div class="bar" style="height: 62%;">
+                <span>82</span>
+              </div>
+
+              <div class="bar" style="height: 72%;">
+                <span>87</span>
+              </div>
+
+              <div class="bar" style="height: 68%;">
+                <span>85</span>
+              </div>
+
+              <div class="bar" style="height: 80%;">
+                <span>91</span>
+              </div>
+
+              <div class="bar" style="height: 76%;">
+                <span>89</span>
+              </div>
+
+              <div class="bar" style="height: 88%;">
+                <span>93</span>
+              </div>
+
+              <div class="bar" style="height: 94%;">
+                <span>94</span>
+              </div>
+
+            </div>
+
+            <div class="chart-labels">
+              <span>Mon</span>
+              <span>Tue</span>
+              <span>Wed</span>
+              <span>Thu</span>
+              <span>Fri</span>
+              <span>Sat</span>
+              <span>Sun</span>
+            </div>
+
+          </div>
+
+          <div class="card quality-score">
+
+            <div class="card-header">
+              <h3>Overall Quality</h3>
+            </div>
+
+            <div class="score-circle">
+              94%
+            </div>
+
+            <p>
+              Excellent data quality
+            </p>
+
+            <span class="badge success" style="margin-top:12px;">
+              Healthy
+            </span>
+
+          </div>
+
+        </div>
+
+        <div class="card table-card">
+
+          <div class="card-header">
+            <h3>Recent Datasets</h3>
+
+            <button class="btn btn-secondary">
+              View All
+            </button>
+          </div>
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Dataset</th>
+                <th>Records</th>
+                <th>Quality</th>
+                <th>Issues</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <tr>
+                <td>customer_data.csv</td>
+                <td>25,430</td>
+                <td>96%</td>
+                <td>8</td>
+                <td>
+                  <span class="badge success">Healthy</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td>sales_data.csv</td>
+                <td>18,720</td>
+                <td>91%</td>
+                <td>17</td>
+                <td>
+                  <span class="badge warning">Review</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td>employees.csv</td>
+                <td>8,450</td>
+                <td>98%</td>
+                <td>3</td>
+                <td>
+                  <span class="badge success">Healthy</span>
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+      <!-- UPLOAD -->
+
+      <div id="upload" class="page">
+
+        <div class="welcome">
+          <h2>Upload Dataset</h2>
+
+          <p>
+            Upload a CSV or Excel dataset to start data quality analysis.
+          </p>
+        </div>
+
+        <div class="upload-box">
+
+          <div class="upload-icon">
+            ↑
+          </div>
+
+          <h3>Upload your dataset</h3>
+
+          <p>
+            Drag and drop your file here or select a file from your computer.
+          </p>
+
+          <input
+            type="file"
+            id="fileInput"
+            accept=".csv,.xlsx,.xls"
+            style="display:none"
+          />
+
+          <button
+            class="btn btn-primary"
+            onclick="document.getElementById('fileInput').click()"
+          >
+            Select Dataset
+          </button>
+
+          <p id="fileName"></p>
+
+        </div>
+
+      </div>
+
+      <!-- PROFILING -->
+
+      <div id="profiling" class="page">
+
+        <div class="welcome">
+          <h2>Data Profiling</h2>
+
+          <p>
+            Understand the structure and quality of your dataset.
+          </p>
+        </div>
+
+        <div class="profile-grid">
+
+          <div class="card">
+            <div class="stat-label">Total Records</div>
+            <div class="metric">25,430</div>
+          </div>
+
+          <div class="card">
+            <div class="stat-label">Total Columns</div>
+            <div class="metric">18</div>
+          </div>
+
+          <div class="card">
+            <div class="stat-label">Completeness</div>
+            <div class="metric">96.4%</div>
+
+            <div class="progress">
+              <div class="progress-bar" style="width:96%"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="card table-card">
+
+          <div class="card-header">
+            <h3>Column Analysis</h3>
+          </div>
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Column</th>
+                <th>Type</th>
+                <th>Non-null</th>
+                <th>Missing</th>
+                <th>Unique</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <tr>
+                <td>customer_id</td>
+                <td>Integer</td>
+                <td>100%</td>
+                <td>0</td>
+                <td>25,430</td>
+              </tr>
+
+              <tr>
+                <td>customer_name</td>
+                <td>String</td>
+                <td>98.2%</td>
+                <td>458</td>
+                <td>24,870</td>
+              </tr>
+
+              <tr>
+                <td>email</td>
+                <td>String</td>
+                <td>95.7%</td>
+                <td>1,093</td>
+                <td>24,100</td>
+              </tr>
+
+              <tr>
+                <td>purchase_amount</td>
+                <td>Float</td>
+                <td>99.1%</td>
+                <td>229</td>
+                <td>18,340</td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+      <!-- ISSUES -->
+
+      <div id="issues" class="page">
+
+        <div class="welcome">
+          <h2>Data Quality Issues</h2>
+
+          <p>
+            Identify and manage problems detected in your datasets.
+          </p>
+        </div>
+
+        <div class="issue-summary">
+
+          <div class="issue-card">
+            <small>Total Issues</small>
+            <strong>127</strong>
+          </div>
+
+          <div class="issue-card">
+            <small>Critical</small>
+            <strong style="color:#dc2626">12</strong>
+          </div>
+
+          <div class="issue-card">
+            <small>Warnings</small>
+            <strong style="color:#d97706">46</strong>
+          </div>
+
+          <div class="issue-card">
+            <small>Resolved</small>
+            <strong style="color:#16a34a">103</strong>
+          </div>
+
+        </div>
+
+        <div class="card table-card">
+
+          <div class="card-header">
+            <h3>Detected Issues</h3>
+
+            <button class="btn btn-secondary">
+              Filter
+            </button>
+          </div>
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Issue</th>
+                <th>Column</th>
+                <th>Records</th>
+                <th>Severity</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <tr>
+                <td>Missing Values</td>
+                <td>email</td>
+                <td>1,093</td>
+                <td>
+                  <span class="badge danger">Critical</span>
+                </td>
+                <td>
+                  <span class="badge warning">Pending</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td>Duplicate Records</td>
+                <td>customer_id</td>
+                <td>84</td>
+                <td>
+                  <span class="badge warning">Warning</span>
+                </td>
+                <td>
+                  <span class="badge warning">Pending</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td>Invalid Email</td>
+                <td>email</td>
+                <td>37</td>
+                <td>
+                  <span class="badge danger">Critical</span>
+                </td>
+                <td>
+                  <span class="badge success">Resolved</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td>Outlier Values</td>
+                <td>purchase_amount</td>
+                <td>21</td>
+                <td>
+                  <span class="badge warning">Warning</span>
+                </td>
+                <td>
+                  <span class="badge success">Resolved</span>
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+      <!-- REPAIR -->
+
+      <div id="repair" class="page">
+
+        <div class="welcome">
+          <h2>Data Repair</h2>
+
+          <p>
+            Automatically fix detected data quality problems.
+          </p>
+        </div>
+
+        <div class="repair-step">
+
+          <div class="step-number">
+            1
+          </div>
+
+          <div>
+            <h4>Detect Issues</h4>
+
+            <p>
+              DataFix scans your dataset and identifies missing,
+              duplicate and invalid values.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="repair-step">
+
+          <div class="step-number">
+            2
+          </div>
+
+          <div>
+            <h4>Choose Repair Strategy</h4>
+
+            <p>
+              Select appropriate methods such as imputation,
+              duplicate removal or format correction.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="repair-step">
+
+          <div class="step-number">
+            3
+          </div>
+
+          <div>
+            <h4>Apply Repairs</h4>
+
+            <p>
+              Apply automated corrections to the detected issues.
+            </p>
+
+            <button
+              class="btn btn-primary"
+              style="margin-top:12px"
+              onclick="alert('Repair process started successfully!')"
+            >
+              Start Repair
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- VALIDATION -->
+
+      <div id="validation" class="page">
+
+        <div class="welcome">
+          <h2>Validation</h2>
+
+          <p>
+            Verify that repaired data meets your quality requirements.
+          </p>
+        </div>
+
+        <div class="validation-result">
+
+          <div class="check">
+            ✓
+          </div>
+
+          <h2>Validation Passed</h2>
+
+          <p>
+            Your dataset successfully passed the quality validation checks.
+          </p>
+
+          <div style="margin-top:20px">
+
+            <span class="badge success">
+              96.8% Quality Score
+            </span>
+
+            <span class="badge success">
+              0 Critical Issues
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- REPORTS -->
+
+      <div id="reports" class="page">
+
+        <div class="welcome">
+          <h2>Reports</h2>
+
+          <p>
+            Generate and review data quality reports.
+          </p>
+        </div>
+
+        <div class="reports-grid">
+
+          <div class="report">
+
+            <div class="report-icon">
+              📊
+            </div>
+
+            <h3>Data Quality Report</h3>
+
+            <p>
+              Complete overview of dataset quality,
+              completeness and detected issues.
+            </p>
+
+            <button
+              class="btn btn-primary"
+              onclick="alert('Report generation started!')"
+            >
+              Generate Report
+            </button>
+
+          </div>
+
+          <div class="report">
+
+            <div class="report-icon">
+              🔧
+            </div>
+
+            <h3>Repair Report</h3>
+
+            <p>
+              Summary of all repairs performed on your dataset.
+            </p>
+
+            <button class="btn btn-secondary">
+              View Report
+            </button>
+
+          </div>
+
+          <div class="report">
+
+            <div class="report-icon">
+              ✓
+            </div>
+
+            <h3>Validation Report</h3>
+
+            <p>
+              Results of validation checks after data repair.
+            </p>
+
+            <button class="btn btn-secondary">
+              View Report
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+<script>
+
+  function showPage(pageId, element) {
+
+    const pages = document.querySelectorAll(".page");
+
+    pages.forEach(function(page) {
+      page.classList.remove("active");
+    });
+
+    document.getElementById(pageId).classList.add("active");
+
+    const navItems = document.querySelectorAll(".nav-item");
+
+    navItems.forEach(function(item) {
+      item.classList.remove("active");
+    });
+
+    element.classList.add("active");
+
+    const pageNames = {
+      dashboard: "Dashboard",
+      upload: "Upload",
+      profiling: "Profiling",
+      issues: "Issues",
+      repair: "Repair",
+      validation: "Validation",
+      reports: "Reports"
+    };
+
+    document.getElementById("pageTitle").textContent =
+      pageNames[pageId];
+
+    document.getElementById("breadcrumb").textContent =
+      pageNames[pageId];
+
+  }
+
+  document
+    .getElementById("fileInput")
+    .addEventListener("change", function() {
+
+      if (this.files.length > 0) {
+
+        document.getElementById("fileName").textContent =
+          "Selected file: " + this.files[0].name;
+
+      }
+
+    });
+
+</script>
+
+</body>
+</html>
